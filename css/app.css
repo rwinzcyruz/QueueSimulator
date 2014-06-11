@@ -1,0 +1,13 @@
+#result {
+  max-height: 1000px;
+  overflow-y: auto;
+}
+.container {
+  width: 830px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+input[type="range"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
