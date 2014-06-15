@@ -18,7 +18,7 @@ Math.randrange = function (min, max) {
   return min + Math.floor(range * Math.random());
 };
 
-angular.module('App', [])
+angular.module('App', ['ui.bootstrap'])
   .directive('ngMin', function () {
     return {
       restrict: 'A',
@@ -45,34 +45,38 @@ angular.module('App', [])
   })
   .controller('AppCtrl', function ($scope, $interval, $timeout, chartConfig) {
 
-    var system, chart, update, seriesConfig, speedTimeout;
+    var system, chart, update, seriesConfig, speedTimeout, arrivalProbTimeout;
 
-    $scope.speed = 1;
     $scope.count = 3;
 
     $scope.in = {
+      speed: 1,
+      prob: 50,
       min_iat: 1,
-      max_iat: 5,
+      max_iat: 10,
       min_st: 2,
-      max_st: 7
+      max_st: 5
     };
 
-    $scope.$watch('speed', function (value) {
-      $timeout.cancel(speedTimeout);
-      speedTimeout = $timeout(function () {
-        if ($scope.is_running) {
-          system.setSpeed(parseInt(1000 / value));
-        }
+    $scope.$watch('in.prob', function (value) {
+      $timeout.cancel(arrivalProbTimeout);
+      arrivalProbTimeout = $timeout(function () {
+        return system && system.setArrivalProb(value) || undefined;
       }, 1000);
     });
 
-    seriesConfig = [{
-      name: 'Average Inter Arrival Time',
-    }, {
-      name: 'Average Service Time',
-    }, {
-      name: 'Average Waiting Time',
-    }];
+    $scope.$watch('in.speed', function (value) {
+      $timeout.cancel(speedTimeout);
+      speedTimeout = $timeout(function () {
+        return system && system.setSpeed(value) || undefined;
+      }, 1000);
+    });
+
+    seriesConfig = [
+      {name: 'Average Inter Arrival Time'},
+      {name: 'Average Service Time'},
+      {name: 'Average Waiting Time'}
+    ];
 
     update = function () {
       var log = system.getLog();
@@ -81,6 +85,10 @@ angular.module('App', [])
       chart.series[2].addPoint(parseFloat(log[0].avg_waiting_time), false, false);
       chart.redraw();
       $scope.result = log;
+      $scope.out = {
+        total_client: system.getTotalClient(),
+        servers: system.getServerLog()
+      };
     };
 
     $scope.is_new = true;
@@ -105,9 +113,7 @@ angular.module('App', [])
       chartConfig.series = series;
       chart = new Highcharts.StockChart(chartConfig);
 
-      system = System($interval, startTime, $scope.count, function () {
-        update();
-      });
+      system = System($interval, startTime, parseInt($scope.count), update);
       system.start($scope.in);
     };
 
@@ -125,8 +131,8 @@ angular.module('App', [])
       $scope.is_running = false;
       $scope.is_new = true;
 
-      chart.destroy();
       system.stop();
+      chart.destroy();
     };
 
     $scope.$on('destroy', $scope.stop);

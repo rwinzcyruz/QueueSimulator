@@ -25,11 +25,19 @@ var System = function ($interval, startTime, serverCount, callback) {
       _getAvgWaitingTime = function () {
         return ((_totalWaitingTime / _totalClient) || 0).toFixed(3);
       },
+      _setArrivalProb = function (prob) {
+        _arrivalProb = parseFloat(+prob / 100);
+      },
+      _setSpeed = function (speed) {
+        _speed = parseFloat(1000 / +speed);
+      },
       _init = function (options) {
+        _setSpeed(options.speed);
+        _setArrivalProb(options.prob);
         _minIAT = options.min_iat;
-        _maxIAT = options.max_iat;
+        _maxIAT = options.max_iat + 1;
         _minST = options.min_st;
-        _maxST = options.max_st;
+        _maxST = options.max_st + 1;
       },
       _compute = function () {
         var iat, st, cur, client, server, finishedLog;
@@ -38,9 +46,8 @@ var System = function ($interval, startTime, serverCount, callback) {
           iat = Math.randrange(_minIAT, _maxIAT);
           if (!_arrival[iat]) {
             _arrival[iat] = [Client(_timeCount, iat)];
-          }
-          else {
-            _arrival.push(Client(_timeCount, iat));
+          } else {
+            _arrival[iat].push(Client(_timeCount, iat));
           }
         }
 
@@ -55,8 +62,7 @@ var System = function ($interval, startTime, serverCount, callback) {
           server.addClient(client);
           _totalClient++;
           _totalInterArrivalTime += client.getInterArrivalTime();
-          console.log('time %d, klien %d masuk pada antrian server %d dengan waktu servis %d. total: %d', _timeCount, client.getId(), server.getId(), st, _totalClient);
-          server.log();
+          console.log('time %d, klien %d masuk pada antrian server %d dengan waktu servis %d.', _timeCount, client.getId(), server.getId(), st);
         }
 
         for (var i = 0; i < serverCount; i++) {
@@ -113,20 +119,23 @@ var System = function ($interval, startTime, serverCount, callback) {
       };
 
   return {
-    getId: function () {
-      return _id;
+    getId: function () { return _id; },
+    getTime: function () { return _timeCount; },
+    getTotalClient: function () { return _totalClient; },
+    getLog: function () { return _log; },
+    getServerLog: function () {
+      var log = [];
+      for (var i = 0; i < serverCount; i++) {
+        log.push(_servers[i].getLog());
+      }
+      return log;
     },
-    getTime: function () {
-      return _timeCount;
-    },
+    setArrivalProb: _setArrivalProb,
     setSpeed: function (speed) {
-      _speed = speed;
+      _setSpeed(speed);
       _pause();
       _resume();
-      console.info('speed change to %d ms per tick', speed);
-    },
-    getLog: function () {
-      return _log;
+      console.info('speed change to %d ms per tick', _speed);
     },
     start: _start,
     pause: _pause,

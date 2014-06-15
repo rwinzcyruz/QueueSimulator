@@ -20,8 +20,12 @@
             <input ng-model="count" ng-disabled="!is_new" type="range" min="1" max="10" name="count" required>
           </div>
           <div class="form-group">
-            <label for="speed">Kecepatan : {{ speed }}&times;</label>
-            <input ng-model="speed" type="range" min="1" max="10" name="speed" required>
+            <label for="prob">Probabilitas Kemunculan Kendaraan : {{ in.prob }}%</label>
+            <input ng-model="in.prob" type="range" min="0" max="100" name="prob" required>
+          </div>
+          <div class="form-group">
+            <label for="speed">Kecepatan : {{ in.speed }}&times;</label>
+            <input ng-model="in.speed" type="range" min="1" max="10" name="speed" required>
           </div>
         </fieldset>
 
@@ -67,6 +71,14 @@ MAX ST  {{ form.max_st.$error }}
 
     <div id="chart"></div>
 
+    <div ng-show="out">
+      <p>Total Klien : {{ out.total_client }}</p>
+      <p ng-repeat="server in out.servers track by server.id">
+        Server {{ server.id }} telah melayani {{ server.total_serve }} klien,
+        memiliki panjang antrian : {{ server.queue_length }}, sedang melayani klien : {{ server.client.id }} [{{ server.client.attend_time }}]
+      </p>
+    </div>
+
     <div id="result">
       <table class="table table-bordered table-hover table-condensed">
         <thead>
@@ -93,6 +105,7 @@ MAX ST  {{ form.max_st.$error }}
 
   <script src="js/jquery.js"></script>
   <script src="js/angular.js"></script>
+  <script src="js/ui-bootstrap-tpls.js"></script>
   <script src="js/highstock.src.js"></script>
   <script src="js/Server.js"></script>
   <script src="js/Client.js"></script>
