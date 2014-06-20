@@ -87,7 +87,8 @@ angular.module('App', ['ui.bootstrap'])
       $scope.result = log;
       $scope.out = {
         total_client: system.getTotalClient(),
-        servers: system.getServerLog()
+        servers: system.getServerLog(),
+        arrival: system.getArrivalQueue()
       };
     };
 

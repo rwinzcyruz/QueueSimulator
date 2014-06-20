@@ -141,6 +141,7 @@ var System = function ($interval, startTime, serverCount, callback) {
       }
       return log;
     },
+    getArrivalQueue: function () { return _arrival; },
     setArrivalProb: _setArrivalProb,
     setSpeed: function (speed) {
       _setSpeed(speed);
