@@ -73,12 +73,32 @@ MAX ST  {{ form.max_st.$error }}
 
     <div ng-show="out">
       <p>Total Klien : {{ out.total_client }}</p>
-      <ul>
-        <li ng-repeat="server in out.servers track by server.id">
-          Server {{ server.id }} telah melayani {{ server.total_serve }} klien,
-          memiliki panjang antrian : {{ server.queue_length }}, sedang melayani klien : {{ server.client.id }} [{{ server.client.attend_time }}]
-        </li>
-      </ul>
+      <table class="table table-bordered table-hover table-condensed">
+       <thead>
+         <tr>
+           <th>Server Id</th>
+           <th>Total Serve</th>
+           <th>Queue Length</th>
+           <th>Client Id</th>
+           <th>Client Attend Time</th>
+           <th>Server Idle Time</th>
+           <th>Server Total Idle Time</th>
+           <th>Server Average Idle Time</th>
+         </tr>
+       </thead>
+        <tbody>
+          <tr ng-repeat="server in out.servers track by server.id">
+            <td>{{ server.id }}</td>
+            <td>{{ server.total_serve }}</td>
+            <td>{{ server.queue_length }}</td>
+            <td>{{ server.client.id }}</td>
+            <td>{{ server.client.attend_time }}</td>
+            <td>{{ server.idle_time }}</td>
+            <td>{{ server.total_idle_time }}</td>
+            <td>{{ server.avg_idle_time }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div id="result">
