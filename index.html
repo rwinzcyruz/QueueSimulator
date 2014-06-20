@@ -61,12 +61,14 @@
         <button ng-show="is_running && !is_new" ng-click="stop()" ng-disabled="form.$invalid" type="button" class="btn btn-danger">Stop</button>
       </div>
 
+<!--
 <pre>
 MIN IAT {{ form.min_iat.$error }}
 MAX IAT {{ form.max_iat.$error }}
 MIN ST  {{ form.min_st.$error }}
 MAX ST  {{ form.max_st.$error }}
 </pre>
+-->
     </form>
 
     <div id="chart"></div>
@@ -101,7 +103,7 @@ MAX ST  {{ form.max_st.$error }}
       </table>
     </div>
 
-    <div id="result">
+    <div id="result" ng-show="result">
       <table class="table table-bordered table-hover table-condensed">
         <thead>
           <tr>

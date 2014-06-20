@@ -21,6 +21,7 @@ var Server = function () {
     getTotalServe: function () { return _totalServe; },
     getQueueLength: function () { return _queue.length; },
     addClient: function (client) { return _queue.push(client); },
+    getTotalIdle: function () { return _totalIdle; },
     getAvgIdleTime: _getAvgIdleTime,
     isIdle: _isIdle,
     serve: function (time) {
@@ -28,12 +29,12 @@ var Server = function () {
 
       if (_isIdle()) {
         if (_queue.length > 0) {
-          _totalIdle += _idleTime;
           _idleTime = 0;
           _client = _queue.shift();
           _client.startService(time);
         } else {
           _idleTime++;
+          _totalIdle++;
         }
       } else {
         _client.decAttendTime();

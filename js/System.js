@@ -58,7 +58,8 @@ var System = function ($interval, startTime, serverCount, callback) {
           st = Math.randrange(_minST, _maxST);
           client = cur.shift();
           client.setServiceTime(st);
-          server = _servers[Math.randrange(serverCount)];
+//          server = _servers[Math.randrange(serverCount)];
+          server = _servers[_chooseServer()];
           server.addClient(client);
           _totalClient++;
           _totalInterArrivalTime += client.getInterArrivalTime();
@@ -116,6 +117,16 @@ var System = function ($interval, startTime, serverCount, callback) {
           _compute();
         }, _speed);
         console.info('system resumed');
+      },
+      _chooseServer = function () {
+        var order = [];
+
+        for (var i in _servers) {
+          order.push([_servers[i].getId(), _servers[i].getTotalIdle()]);
+        }
+
+        order.sort(function (a, b) { return b[1] - a[1]; });
+        return order[0][0] - 1;
       };
 
   return {
