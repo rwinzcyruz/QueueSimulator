@@ -74,7 +74,7 @@ var System = function ($interval, startTime, serverCount, callback) {
         }
 
         _timeCount++;
-        _time = _time + 60 * 1000;
+        _time += 1000;
 
         _log.unshift({
           time: new Date(_time).toLocaleString(),

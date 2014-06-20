@@ -14,8 +14,8 @@ angular.module('App')
       }
     },
     xAxis: {
-      minRange: 10 * 60 * 1000,
-      minTickInterval: 60 * 1000
+      minRange: 10 * 1000,
+      minTickInterval: 1000
     },
     legend: {
       enabled: true
@@ -29,12 +29,12 @@ angular.module('App')
       selected: 0,
       buttons: [{
         count: 1,
+        type: 'minute',
+        text: '1M'
+      }, {
+        count: 1,
         type: 'hour',
         text: '1H'
-      }, {
-        count: 12,
-        type: 'hour',
-        text: '12H'
       }, {
         count: 1,
         type: 'day',
@@ -56,7 +56,7 @@ angular.module('App')
           }
         },
         threshold: null,
-        pointInterval: 60 * 1000
+        pointInterval: 1000
       }
     },
     credits: {

@@ -99,12 +99,7 @@ angular.module('App', ['ui.bootstrap'])
       $scope.is_new = false;
 
       var series = JSON.parse(JSON.stringify(seriesConfig)),
-          startTime = (function () {
-            var date = new Date();
-            date.setSeconds(0);
-            date.setMilliseconds(0);
-            return date.getTime();
-          })();
+          startTime = new Date().setMilliseconds(0);
 
       for (var i = 0; i < 3; i++) {
         series[i].pointStart = startTime;
